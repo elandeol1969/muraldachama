@@ -1,0 +1,240 @@
+.carousel-section {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  padding: 1.2rem 2rem 2.4rem 2rem;
+  margin-bottom: 2.4rem;
+  border-radius: 12px;
+}
+
+.carousel-title {
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  color: #667eea;
+  margin-bottom: 1.6rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.carousel-nav {
+  background: rgba(102, 126, 234, 0.9);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.carousel-nav:hover {
+  background: #667eea;
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-nav:active {
+  transform: scale(0.95);
+}
+
+.carousel-nav.prev {
+  margin-right: 0.5rem;
+}
+
+.carousel-nav.next {
+  margin-left: 0.5rem;
+}
+
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 1.6rem 1rem;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  gap: 1.5rem;
+  padding: 0 1rem;
+}
+
+.carousel-item {
+  min-width: 320px;
+  max-width: 320px;
+  flex-shrink: 0;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.6rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #667eea;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot:hover {
+  background: #667eea;
+  opacity: 0.7;
+}
+
+.dot.active {
+  background: #667eea;
+  transform: scale(1.3);
+}
+
+@media (max-width: 1100px) {
+  .carousel-container {
+    max-width: 700px;
+  }
+  
+  .carousel-wrapper {
+    max-width: 800px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .carousel-container {
+    max-width: 340px;
+  }
+  
+  .carousel-wrapper {
+    max-width: 450px;
+  }
+  
+  .carousel-item {
+    min-width: 320px;
+    max-width: 320px;
+  }
+  
+  .carousel-nav {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    max-width: 100%;
+    width: 100%;
+    padding: 2rem 0;
+    overflow: hidden;
+  }
+  
+  .carousel-track {
+    display: flex;
+    gap: 0;
+    padding: 0;
+  }
+  
+  .carousel-wrapper {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0;
+  }
+  
+  .carousel-item {
+    min-width: 100%;
+    max-width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    padding: 0 1rem;
+  }
+  
+  .carousel-item > .message-card {
+    width: 280px;
+    max-width: 90%;
+  }
+
+  .carousel-title {
+    font-size: 1.5rem;
+  }
+
+  .carousel-section {
+    padding: 2rem 0.5rem;
+  }
+  
+  /* Container dos botões em mobile */
+  .carousel-wrapper > .carousel-container {
+    order: 1;
+    width: 100%;
+  }
+  
+  /* Criar container virtual para os botões */
+  .carousel-nav {
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
+  }
+  
+  .carousel-nav.prev {
+    order: 2;
+    margin-right: 0.5rem;
+  }
+  
+  .carousel-nav.next {
+    order: 2;
+    margin-left: 0.5rem;
+  }
+  
+  /* Garantir que as setas fiquem lado a lado */
+  .carousel-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    justify-items: center;
+  }
+  
+  .carousel-container {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  /* Container para ambos os botões na mesma linha */
+  .carousel-nav.prev,
+  .carousel-nav.next {
+    grid-row: 2;
+  }
+  
+  .carousel-nav.prev {
+    grid-column: 1;
+    justify-self: start;
+    margin-left: 1rem;
+  }
+  
+  .carousel-nav.next {
+    grid-column: 1;
+    justify-self: end;
+    margin-right: 1rem;
+  }
+}
