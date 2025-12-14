@@ -107,7 +107,14 @@ const Profile = () => {
       if (updateError) {
         setError('Erro ao atualizar perfil')
       } else {
-        setUser(data)
+        // Atualizar usuário no localStorage
+        const updatedUser = { ...user, ...data }
+        localStorage.setItem('user', JSON.stringify(updatedUser))
+        
+        // Disparar evento para atualizar Header
+        window.dispatchEvent(new Event('userUpdated'))
+        
+        setUser(updatedUser)
         setSuccess('Perfil atualizado com sucesso!')
         setFormData({
           ...formData,
@@ -115,9 +122,11 @@ const Profile = () => {
           novaSenha: '',
           confirmarSenha: ''
         })
+        setAvatarFile(null)
         
+        // Redirecionar para home após 1.5s
         setTimeout(() => {
-          window.location.reload()
+          navigate('/', { replace: true })
         }, 1500)
       }
     } catch (err) {

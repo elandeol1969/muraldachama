@@ -10,14 +10,24 @@ const Header = () => {
 
   useEffect(() => {
     setUser(getUsuarioLogado())
+    
+    // Listener para atualizações de usuário
+    const handleUserUpdate = () => {
+      setUser(getUsuarioLogado())
+    }
+    
+    window.addEventListener('userUpdated', handleUserUpdate)
+    
+    return () => {
+      window.removeEventListener('userUpdated', handleUserUpdate)
+    }
   }, [])
 
   const handleLogout = () => {
     logoutUsuario()
     setUser(null)
     setShowDropdown(false)
-    navigate('/')
-    window.location.reload()
+    navigate('/', { replace: true })
   }
 
   return (
