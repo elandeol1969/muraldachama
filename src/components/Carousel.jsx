@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo, useCallback } from 'react'
 import MessageCard from './MessageCard'
 import './Carousel.css'
 
-const Carousel = ({ messages, onEdit, onDelete }) => {
+const Carousel = memo(({ messages, onEdit, onDelete }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -15,19 +15,31 @@ const Carousel = ({ messages, onEdit, onDelete }) => {
       setIsMobile(window.innerWidth <= 768)
     }
     
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
+    let timeoutId
+    const debouncedCheckMobile = () => {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(checkMobile, 150)
+    }
     
-    return () => window.removeEventListener('resize', checkMobile)
+    checkMobile()
+    window.addEventListener('resize', debouncedCheckMobile)
+    
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener('resize', debouncedCheckMobile)
+    }
   }, [])
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
-  }
+  }, [maxIndex])
 
-  const goToPrev = () => {
+  const goToPrev = useCallback(() => {
     setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1))
-  }
+  }, [maxIndex])
+
+  const handlePause = useCallback(() => setIsPaused(true), [])
+  const handleResume = useCallback(() => setIsPaused(false), [])
 
   useEffect(() => {
     if (carouselMessages.length === 0 || isPaused) return
@@ -37,7 +49,7 @@ const Carousel = ({ messages, onEdit, onDelete }) => {
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [carouselMessages.length, currentIndex, isPaused])
+  }, [carouselMessages.length, isPaused, goToNext])
 
   if (carouselMessages.length === 0) {
     return null
@@ -47,26 +59,18 @@ const Carousel = ({ messages, onEdit, onDelete }) => {
     <div className="carousel-section">
       <h2 className="carousel-title">✨ Mensagens de Motivação em Destaque ✨</h2>
       <div className="carousel-wrapper">
-        <button 
-          className="carousel-nav prev" 
-          onClick={goToPrev}
-          aria-label="Anterior"
-        >
-          ←
-        </button>
-        
         <div className="carousel-container">
           <div 
             className="carousel-track"
             style={{
               transform: isMobile 
                 ? `translateX(-${currentIndex * 100}%)` 
-                : `translateX(-${currentIndex * (320 + 24)}px)`
+                : `translateX(-${currentIndex * (256 + 26)}px)`
             }}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            onTouchStart={() => setIsPaused(true)}
-            onTouchEnd={() => setIsPaused(false)}
+            onMouseEnter={handlePause}
+            onMouseLeave={handleResume}
+            onTouchStart={handlePause}
+            onTouchEnd={handleResume}
           >
             {carouselMessages.map((message, index) => (
               <div key={message.id} className="carousel-item">
@@ -81,13 +85,23 @@ const Carousel = ({ messages, onEdit, onDelete }) => {
           </div>
         </div>
         
-        <button 
-          className="carousel-nav next" 
-          onClick={goToNext}
-          aria-label="Próximo"
-        >
-          →
-        </button>
+        <div className="carousel-nav-container">
+          <button 
+            className="carousel-nav prev" 
+            onClick={goToPrev}
+            aria-label="Anterior"
+          >
+            ←
+          </button>
+          
+          <button 
+            className="carousel-nav next" 
+            onClick={goToNext}
+            aria-label="Próximo"
+          >
+            →
+          </button>
+        </div>
       </div>
       <div className="carousel-dots">
         {carouselMessages.map((_, index) => (
@@ -95,11 +109,14 @@ const Carousel = ({ messages, onEdit, onDelete }) => {
             key={index}
             className={`dot ${index === currentIndex ? 'active' : ''}`}
             onClick={() => setCurrentIndex(index)}
+            aria-label={`Ir para slide ${index + 1}`}
           />
         ))}
       </div>
     </div>
   )
-}
+})
+
+Carousel.displayName = 'Carousel'
 
 export default Carousel

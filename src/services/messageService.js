@@ -30,6 +30,41 @@ export const buscarMensagens = async () => {
   }
 }
 
+// Buscar mensagens paginadas (para otimização de performance)
+export const buscarMensagensPaginadas = async (page = 1, pageSize = 3) => {
+  try {
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
+
+    // Busca todas as mensagens ordenadas por data
+    const { data, error } = await supabase
+      .from('user_message')
+      .select('*')
+      .not('imagem_message', 'is', null)
+      .order('created_at', { ascending: false })
+
+    if (error) return { data: [], error, total: 0 }
+
+    // Filtra para manter apenas a última mensagem de cada usuário
+    const mensagensUnicas = []
+    const emailsVistos = new Set()
+
+    for (const msg of data) {
+      if (!emailsVistos.has(msg.email_usuario) && msg.imagem_message) {
+        mensagensUnicas.push(msg)
+        emailsVistos.add(msg.email_usuario)
+      }
+    }
+
+    const total = mensagensUnicas.length
+    const paginatedData = mensagensUnicas.slice(from, to + 1)
+
+    return { data: paginatedData, error: null, total }
+  } catch (error) {
+    return { data: [], error: error.message, total: 0 }
+  }
+}
+
 // Criar ou atualizar mensagem do usuário
 export const salvarMensagem = async (userId, mensagem) => {
   try {

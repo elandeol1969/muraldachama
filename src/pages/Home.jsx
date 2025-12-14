@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { buscarMensagens, deletarMensagem } from '../services/messageService'
 import Carousel from '../components/Carousel'
@@ -23,11 +23,11 @@ const Home = () => {
     setLoading(false)
   }
 
-  const handleEdit = (message) => {
+  const handleEdit = useCallback((message) => {
     navigate('/mensagem', { state: { editingMessage: message } })
-  }
+  }, [navigate])
 
-  const handleDelete = async (messageId) => {
+  const handleDelete = useCallback(async (messageId) => {
     if (window.confirm('Tem certeza que deseja remover sua mensagem do mural?')) {
       const { error } = await deletarMensagem(messageId)
       if (!error) {
@@ -36,7 +36,9 @@ const Home = () => {
         alert('Erro ao deletar mensagem. Tente novamente.')
       }
     }
-  }
+  }, [])
+
+  const carouselMessages = useMemo(() => messages.slice(0, 9), [messages])
 
   if (loading) {
     return (
@@ -46,9 +48,6 @@ const Home = () => {
       </div>
     )
   }
-
-  const carouselMessages = messages.slice(0, 9)
-  const muralMessages = messages.slice(9)
 
   return (
     <div className="home-page">

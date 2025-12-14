@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { getUsuarioLogado } from '../services/authService'
 import './MessageCard.css'
 
 const CARD_COLORS = ['#ffeb3b', '#ff80ab', '#ccff90', '#80d8ff', '#ffd180']
 
-const MessageCard = ({ message, onEdit, onDelete, index }) => {
+const MessageCard = memo(({ message, onEdit, onDelete, index }) => {
   const [user, setUser] = useState(null)
   const cardColor = CARD_COLORS[index % CARD_COLORS.length]
   const isOwner = user && user.id === message.id
@@ -74,13 +74,18 @@ const MessageCard = ({ message, onEdit, onDelete, index }) => {
 
       {message.imagem_message && (
         <div className="card-image">
-          <img src={message.imagem_message} alt="Mensagem" />
+          <img 
+            src={message.imagem_message} 
+            alt="Mensagem"
+          />
         </div>
       )}
 
       <div className="card-pin"></div>
     </div>
   )
-}
+})
+
+MessageCard.displayName = 'MessageCard'
 
 export default MessageCard
